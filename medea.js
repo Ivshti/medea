@@ -234,7 +234,7 @@ Medea.prototype.put = function(k, v, cb) {
     v = new Buffer(v.toString());
   }
 
-  var bytesToBeWritten = sizes.header + k.length + v.length;
+  var bytesToBeWritten = sizes.header + k.length + Buffer.byteLength(v, "utf8");
 
   var self = this;
 
@@ -257,7 +257,7 @@ Medea.prototype.put = function(k, v, cb) {
       var oldOffset = file.offset;
       file.offset += lineBuffer.length;
 
-      var totalSz = key.length + value.length + sizes.header;
+      var totalSz = key.length + Buffer.byteLength(value, "utf8") + sizes.header;
 
       var hintBufs = new Buffer(sizes.timestamp + sizes.keysize + sizes.offset + sizes.totalsize + key.length)
 
@@ -282,7 +282,7 @@ Medea.prototype.put = function(k, v, cb) {
 
         var entry = new KeyDirEntry();
         entry.fileId = file.timestamp;
-        entry.valueSize = value.length;
+        entry.valueSize = Buffer.byteLength(value, "utf8");
         entry.valuePosition = oldOffset + sizes.header + key.length;
         entry.timestamp = ts;
 
@@ -374,7 +374,7 @@ Medea.prototype.write = function(batch, options, cb) {
         
         var entry = new KeyDirEntry();
         entry.fileId = file.timestamp;
-        entry.valueSize = value.length;
+        entry.valueSize = Buffer.byteLength(value, "utf8");
         entry.valuePosition = oldOffset + sizes.header + key.length;
         entry.timestamp = dataEntry.timestamp;
 

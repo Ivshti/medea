@@ -262,7 +262,7 @@ Compactor.prototype._innerMergeWrite = function(dataEntry, cb) {
       var oldOffset = file.offset;
       file.offset += lineBuffer.length;
 
-      var totalSz = key.length + value.length + sizes.header;
+      var totalSz = key.length + Buffer.byteLength(value, "utf8") + sizes.header;
 
       var hintBufs = new Buffer(sizes.timestamp + sizes.keysize + sizes.offset + sizes.totalsize + key.length)
 
@@ -287,7 +287,7 @@ Compactor.prototype._innerMergeWrite = function(dataEntry, cb) {
 
         var entry = new KeyDirEntry();
         entry.fileId = file.timestamp;
-        entry.valueSize = value.length;
+        entry.valueSize = Buffer.byteLength(value, "utf8");
         entry.valuePosition = oldOffset + sizes.header + key.length;
         entry.timestamp = dataEntry.timestamp;
 

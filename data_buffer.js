@@ -15,11 +15,11 @@ exports.fromKeyValuePair = function(key, value, ts) {
   /**
    * [crc][timestamp][keysz][valuesz][key][value]
    */
-  var lineBuffer = new Buffer(sizes.header + key.length + value.length);
+  var lineBuffer = new Buffer(sizes.header + key.length + Buffer.byteLength(value, "utf8"));
 
   lineBuffer.writeDoubleBE(ts, headerOffsets.timestamp);
   lineBuffer.writeUInt16BE(key.length, headerOffsets.keysize);
-  lineBuffer.writeUInt32BE(value.length, headerOffsets.valsize);
+  lineBuffer.writeUInt32BE(Buffer.byteLength(value, "utf8"), headerOffsets.valsize);
 
   key.copy(lineBuffer, headerOffsets.valsize + sizes.valsize);
   if (typeof(value) === 'string')
